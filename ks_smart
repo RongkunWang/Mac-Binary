@@ -1,0 +1,6 @@
+#!/bin/bash
+
+kswitch -p $1                                                                                                   
+if [[ $? != 0 ]]; then                                                                                          
+    kinit -l 9999999999 $1                                                                                      
+fi  
