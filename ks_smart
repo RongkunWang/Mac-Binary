@@ -1,6 +1,9 @@
 #!/bin/bash
 
 kswitch -p $1                                                                                                   
+klist -s
 if [[ $? != 0 ]]; then                                                                                          
+    echo "expired or not exist, asking for new one"
     kinit -l 9999999999 $1                                                                                      
 fi  
+
