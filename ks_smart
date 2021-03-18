@@ -1,9 +1,13 @@
 #!/bin/bash
 
-kswitch -p $1                                                                                                   
-if [[ $? != 0 ]]; then                                                                                          
+kswitch -p $1
+status=$?
+output=$(klist)
+if [[ $status != 0 ]] || [[ $output =~ Expired ]] ; then
     echo "expired or not exist, asking for new one"
-    kinit -l 9999999999 $1                                                                                      
-    kswitch -p $1                                                                                                   
-fi  
+    kinit -l 99999 $1
+    kswitch -p $1
+fi
+
+# echo $output
 # klist -s
