@@ -1,13 +1,25 @@
 #!/bin/bash
 
-kswitch -p $1
-status=$?
-output=$(klist)
-if [[ $status != 0 ]] || [[ $output =~ Expired ]] ; then
-    echo "expired or not exist, asking for new one"
-    kinit -l 99999 $1
-    kswitch -p $1
+name=rowang@CERN.CH
+if [[ "$#" -ge 1 ]]; then
+    name=$1
 fi
 
-# echo $output
-# klist -s
+echo getting $name
+
+kinit -R -l 60h -r 60h $name
+SwitchStatus=$?
+kswitch -p $name
+# SwitchStatus=$?
+output=$(klist)
+# echo $status, $output
+if [[ $SwitchStatus != 0 ]]; then
+    echo "expired or not exist, asking for new one"
+    # kinit --renewable -l 99999 $name
+    # kinit -R -l 99999 $name
+    kinit -r 168h -l 168h $name
+elif [[ $output =~ "not found" ]]; then
+    kinit -r 168h -l 168h $name
+fi
+
+kswitch -p $name
